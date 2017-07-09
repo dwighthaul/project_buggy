@@ -36,7 +36,6 @@ class serverSetDirectionRobot:
 	def change_direction(self, speed_wheel, action):
 
 		self.publishSpeed(speed_wheel)
-		rospy.loginfo("direction modified")
 		time.sleep(secs)
 
 
@@ -46,7 +45,7 @@ class serverSetDirectionRobot:
 
 
 	def modificator_direction(self, speed_wheel, action):
-		speed_wheel = [speed_wheel[0]*2.25, speed_wheel[1]*2.25]
+		speed_wheel = [speed_wheel[0]*2.20, speed_wheel[1]*2.20]
 		rospy.loginfo("Final Speed %s - %s", speed_wheel[0], speed_wheel[1])
 		return speed_wheel
 
@@ -72,20 +71,20 @@ class serverSetDirectionRobot:
 			speed_wheel= [-100, -100]
 
 
-		# if action.direction == "forward":
-			# speed_wheel= [100, 100]
+		if action.direction == "forward":
+			speed_wheel= [100, 100]
 
-		# elif action.direction == "stop":
-		# 	speed_wheel= [0, 0]
+		elif action.direction == "stop":
+			speed_wheel= [0, 0]
 
-		# elif action.direction == "backward":
-		# 	speed_wheel= [-100, -100]
+		elif action.direction == "backward":
+			speed_wheel= [-100, -100]
 
-		# elif action.direction == "rotate":
-		# 	if action.side == "right":
-		# 		speed_wheel= [100, 0]
-		# 	elif action.side == "left":
-		# 		speed_wheel= [0, 100]
+		elif action.direction == "rotate":
+			if action.side == "right":
+				speed_wheel= [100, -100]
+			elif action.side == "left":
+				speed_wheel= [-100, 100]
 
 
 
