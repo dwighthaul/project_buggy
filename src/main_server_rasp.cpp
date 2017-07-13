@@ -8,26 +8,31 @@
 #include "std_msgs/MultiArrayLayout.h"
 
 bool autonomus = false;
-std_msgs::Int16MultiArray speed_motor;
+bool speed_modified = true;
+
+project_buggy::SpeedMotors speed_motors;
 
 
-void get_speed_from_random(const std_msgs::Int16MultiArray& msg){
-	// ROS_INFO("GET_DATA_FROM_RANDOM [%d] - [%d]", msg.data[0], msg.data[1]);
-	if(autonomus) {
-//		speed_motor = msg;
-	}
+
+void setSpeed(const project_buggy::SpeedMotors& msg){
+	speed_modified = true;
+	speed_motors = msg;
 }
 
-void get_speed_from_server(const project_buggy::SpeedMotors& msg){
-	autonomus = msg.data_bool;
 
-	// ROS_INFO("GET_DATA_FROM_PHONE [%d] - [%d] - %i", msg.data[0], msg.data[1], msg.data_bool);
-	if(!autonomus) {
-		speed_motor.data.clear();
-		speed_motor.data.push_back(msg.speeds[0]);
-		speed_motor.data.push_back(msg.speeds[1]);
-	}
+
+void speed_from_socket_cb(const project_buggy::SpeedMotors& msg){
+	ROS_INFO("ACTION");
+	setSpeed(msg);
 }
+
+void speed_from_action_cb(const project_buggy::SpeedMotors& msg){
+	ROS_INFO("ACTION");
+	setSpeed(msg);
+}
+
+
+
 
 int main(int argc, char **argv)
 {
@@ -35,11 +40,11 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "main");
 	ros::NodeHandle n;
 
-	ros::Publisher chatter_pub_main = n.advertise<std_msgs::Int16MultiArray&>("speed_motor_arduino", 1000);
+	ros::Publisher send_toArduino = n.advertise<std_msgs::Int16MultiArray&>("speed_motor_arduino", 1000);
 
 
-	ros::Subscriber get_speed_from_openCV_sub = n.subscribe("get_speed_from_random", 1000, get_speed_from_random);
-	ros::Subscriber get_speed_from_phone_sub = n.subscribe("get_speed_from_server", 1000, get_speed_from_server);
+	ros::Subscriber speed_from_socket = n.subscribe("speed_from_socket", 1000, speed_from_socket_cb);
+	ros::Subscriber speed_from_action = n.subscribe("get_speed_from_server", 1000, speed_from_action_cb);
 
 
 	ros::Rate loop_rate(1);
@@ -47,19 +52,27 @@ int main(int argc, char **argv)
 
 
 	// Init 
-
-	speed_motor.data.clear();
-	speed_motor.data.push_back(0);
-	speed_motor.data.push_back(0);
+	speed_motors = project_buggy::SpeedMotors();
+	speed_motors.speed_right_motor = 0;
+	speed_motors.speed_left_motor = 0;
 
 	while (ros::ok())
 	{
+		if(speed_modified){
+			ROS_INFO("Speed: [%d] - [%d] -  Mode: %i", speed_motors.speed_right_motor, speed_motors.speed_left_motor, autonomus);
 
-		ROS_INFO("Speed: [%d] - [%d] -  Mode: %i", speed_motor.data[0], speed_motor.data[1], autonomus);
+			std_msgs::Int16MultiArray speed = std_msgs::Int16MultiArray();
+			speed.data.clear();
+			speed.data.push_back(speed_motors.speed_right_motor);
+			speed.data.push_back(speed_motors.speed_left_motor);
 
-		chatter_pub_main.publish(speed_motor);
+
+			send_toArduino.publish(speed);
+			speed_modified = false;
+		}
 
 		ros::spinOnce();
+
 
 		loop_rate.sleep();
 

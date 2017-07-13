@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<!-- Copided from rplidar_ros/view_rplidar -->
+
+<launch>
+
+	<!-- Send the data to arduino -->
+	<node pkg="project_buggy" type="connectionToArduino.py" name="connectionToArduino"/>  
+
+	<node pkg="project_buggy" type="main_server_rasp" name="main_server_rasp"/>  
+
+
+	<node pkg="project_buggy" type="action_server_getDirectionRobot.py" name="action_server_getDirectionRobot"    output="screen"/>
+
+	<node pkg="project_buggy" type="getSpeedFromKeyboard.py" name="getSpeedFromKeyboard" output="screen"/>  
+
+	<node pkg="project_buggy" type="getSpeedFromSocket.py" name="getSpeedFromSocket" output="screen"/>  
+
+
+
+</launch>

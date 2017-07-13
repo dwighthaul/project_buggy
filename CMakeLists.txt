@@ -81,7 +81,6 @@ target_link_libraries(main_server_rasp ${catkin_LIBRARIES})
 add_dependencies(main_server_rasp project_buggy_generate_messages_cpp)
 
 
-
 #############
 ## Testing ##
 #############

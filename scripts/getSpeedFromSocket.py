@@ -15,58 +15,62 @@ import socket
 
 
 
-HOST = ''                 # Symbolic name meaning all available interfaces
-PORT = 50007              # Arbitrary non-privileged port
+HOST = ''				 # Symbolic name meaning all available interfaces
+PORT = 50007			  # Arbitrary non-privileged port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.bind((HOST, PORT))
 
 def talker():
 
-    val1 = 0
-    val2 = 0
+	val1 = 0
+	val2 = 0
 
-    pub = rospy.Publisher('get_speed_from_phone', SpeedMotors, queue_size=10)
+	pub = rospy.Publisher('speed_from_socket', SpeedMotors, queue_size=10)
 
-    rospy.init_node('phone', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    while not rospy.is_shutdown():
+	rospy.init_node('speedFromSocket', anonymous=True)
+	rate = rospy.Rate(10) # 10hz
+	while not rospy.is_shutdown():
 
 #	print 'val1 ', val1, 'val2 ', val2
 
-        data = ""
+		data = ""
 
-	s.listen(1)
-        conn, addr = s.accept()
-#        print 'Connected by ', addr
+		s.listen(1)
+		conn, addr = s.accept()
+#		print 'Connected by ', addr
 
-        while 1:
-            data = conn.recv(1024)
+		while 1:
+			data = conn.recv(1024)
 
-            if not data: break
-
-
-            Jsondata = json.loads(data)
-
-            try:
-                print(str(Jsondata) + "\n")
-
-    	        val1 = Jsondata['speed_left']
-        	val2 = Jsondata['speed_right']
-                is_autonomus = Jsondata['is_autonomus']
-
-                var_from_the_phone = SpeedMotors()
-                var_from_the_phone.speeds = [val1, val2]
-                var_from_the_phone.data_bool = is_autonomus
+			if not data: break
 
 
-                pub.publish(var_from_the_phone)
-            except Exception:
-		pass
-#        rate.sleep()
+			Jsondata = json.loads(data)
+
+			try:
+				print(str(Jsondata) + "\n")
+
+				val1 = Jsondata['speed_left']
+				val2 = Jsondata['speed_right']
+				is_autonomus = Jsondata['is_autonomus']
+
+				var_from_socket = SpeedMotors()
+				var_from_socket.speed_right_motor = val1
+				var_from_socket.speed_left_motor = val2
+
+				var_from_socket.mode = "socket"
+
+
+				pub.publish(var_from_socket)
+			except Exception:
+				pass
+
+
+#		rate.sleep()
 
 if __name__ == '__main__':
-    try:
-        talker()
-    except rospy.ROSInterruptException:
-        pass
+	try:
+		talker()
+	except rospy.ROSInterruptException:
+		pass

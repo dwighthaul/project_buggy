@@ -16,14 +16,14 @@ secs = 2
 class serverSetDirectionRobot:
 
 
-	buffer_speed_wheel = [0, 0]
+	buffer_speed_wheel = [100, 100]
 
 
 
 	def __init__(self):
 		rospy.init_node('set_direction')
 
-		self.server = actionlib.SimpleActionServer('set_direction', setDirectionRobotAction, self.execute, False)
+		self.server = actionlib.SimpleActionServer('speed_from_action', setDirectionRobotAction, self.execute, False)
 		self.pub = rospy.Publisher('get_speed_from_server', SpeedMotors, queue_size=10)
 
 		self.server.start()
@@ -36,10 +36,10 @@ class serverSetDirectionRobot:
 	def change_direction(self, speed_wheel, action):
 
 		self.publishSpeed(speed_wheel)
-		time.sleep(secs)
 
 
 		if action.backToPrevious:
+			time.sleep(secs)
 			rospy.loginfo("Back to previous")
 			self.publishSpeed(self.buffer_speed_wheel)
 
@@ -52,8 +52,8 @@ class serverSetDirectionRobot:
 
 	def publishSpeed(self, speed_wheel):
 		speedArray = SpeedMotors()
-		speedArray.speeds = speed_wheel
-		speedArray.data_bool = False
+		speedArray.speed_right_motor = speed_wheel[0]
+		speedArray.speed_left_motor = speed_wheel[1]
 
 		self.pub.publish(speedArray)
 
