@@ -23,23 +23,23 @@ class SendActionKeyboard():
            7    8    9
            4    5    6
            1    2    3
-
         ---------------------------
+
 
     """
 
     keyPossible = {
-            '1':("backward", 40,"left",True),
-            '2':("backward", 0,"",True),
-            '3':("backward", 40, "right", True),
+            '1':("backward", 40,"left",False),
+            '2':("backward", 0,"",False),
+            '3':("backward", 40, "right", False),
 
             '4':("rotate", 90, "left", True),
             '5':("stop",    0, "", False),
             '6':("rotate", 90, "right", True),
 
-            '7':("forward", 40, "left",True),
-            '8':("forward", 0, "", True),
-            '9':("forward", 40, "right", True),
+            '7':("forward", 40, "left",False),
+            '8':("forward", 0, "", False),
+            '9':("forward", 40, "right", False),
                }
 
 
@@ -58,7 +58,7 @@ class SendActionKeyboard():
         direction_dir = ""
         angle_dir = 0
         side_dir = ""
-        backToPrevious_dir = True
+        stopWheels = True
 
         try:
 
@@ -73,12 +73,12 @@ class SendActionKeyboard():
                     direction_dir = self.keyPossible[key][0]
                     angle_dir = self.keyPossible[key][1]
                     side_dir = self.keyPossible[key][2]
-                    backToPrevious_dir = self.keyPossible[key][3]
+                    stopWheels = self.keyPossible[key][3]
 
-                    print(direction_dir,angle_dir, side_dir, backToPrevious_dir)
+                    # print(direction_dir,angle_dir, side_dir, stopWheels)
 
 
-                    action = setDirectionRobotGoal(direction = direction_dir, angle= angle_dir, side=side_dir, backToPrevious=backToPrevious_dir)
+                    action = setDirectionRobotGoal(direction = direction_dir, angle= angle_dir, side=side_dir, stopWheels=stopWheels)
 
                     self.sendDirection(action)
 

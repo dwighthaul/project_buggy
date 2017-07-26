@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
 <!-- Copided from rplidar_ros/view_rplidar -->
-
 <launch>
 
 	<!-- Send the data to arduino -->
