@@ -24,8 +24,6 @@ class SendActionKeyboard():
            4    5    6
            1    2    3
         ---------------------------
-
-
     """
 
     keyPossible = {
@@ -33,9 +31,9 @@ class SendActionKeyboard():
             '2':("backward", 0,"",False),
             '3':("backward", 40, "right", False),
 
-            '4':("rotate", 90, "left", True),
+            '4':("rotate", 90, "left", False),
             '5':("stop",    0, "", False),
-            '6':("rotate", 90, "right", True),
+            '6':("rotate", 90, "right", False),
 
             '7':("forward", 40, "left",False),
             '8':("forward", 0, "", False),

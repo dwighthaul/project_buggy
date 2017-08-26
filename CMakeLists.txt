@@ -62,6 +62,7 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 
+
 catkin_package()
 
 ###########
@@ -91,8 +92,6 @@ add_dependencies(main_server_rasp project_buggy_generate_messages_cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
-
-
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)

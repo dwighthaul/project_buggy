@@ -12,6 +12,8 @@ from std_msgs.msg import Int16MultiArray, MultiArrayDimension, MultiArrayLayout
 
 
 secs = 1
+MAX_VALUE = 250
+MIN_VALUE = -250
 
 class serverSetDirectionRobot:
 
@@ -35,9 +37,12 @@ class serverSetDirectionRobot:
 
 
 
+	def min_max(self, l):
+		return max(min(l, MAX_VALUE), MIN_VALUE)
+
+
 	def modificator_direction(self, speed_wheel, action):
-		r_speed_wheel = [speed_wheel.data[0]*2.20, speed_wheel.data[1]*2.20]
-		# rospy.loginfo("Final Speed %s - %s", r_speed_wheel[0], r_speed_wheel[1])
+		r_speed_wheel = [self.min_max(speed_wheel.data[0]*2.50), self.min_max(speed_wheel.data[1]*2.50)]
 		return r_speed_wheel
 
 
@@ -89,7 +94,8 @@ class serverSetDirectionRobot:
 
 		speed_wheel = Int16MultiArray()
 
-		# rospy.loginfo("Server get action %s", action.direction)
+		rospy.loginfo("%s", action.direction)
+		# rospy.loginfo("Server get action %s", action.angle)
 
 		if action.direction == "backward":
 			speed_wheel.data= [-100, -100]
